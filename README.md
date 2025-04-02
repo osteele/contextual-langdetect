@@ -45,13 +45,13 @@ pip install contextual-langdetect
 ## Usage
 
 ```python
-from contextual_langdetect import process_document
+from contextual_langdetect import contextual_detect
 
 # Process a document with context-awareness
 sentences = [
     "你好。",  # Detected as ZH
     "你好吗?",  # Detected as ZH
-    "很好。",  # Detected as JA when model=small 
+    "很好。",  # Detected as JA when model=small
     "我家也有四个,刚好。",  # Detected as ZH
     "那么现在天气很冷,你要开暖气吗?",  # Detected as WUU
     "Okay, fine I'll see you next week.",  # English
@@ -59,14 +59,25 @@ sentences = [
 ]
 
 # Context-unaware language detection
-languages = process_document(sentences, context_correction=False)
+languages = contextual_detect(sentences, context_correction=False)
 print(languages)
 # Output: ['zh', 'zh', 'ja', 'zh', 'wuu', 'en', 'en']
 
 # Context-aware language detection
-languages = process_document(sentences)
+languages = contextual_detect(sentences)
 print(languages)
 # Output: ['zh', 'zh', 'zh', 'zh', 'zh', 'en', 'en']
+
+# Context-aware detection with language biasing
+# Specify expected languages to improve detection in ambiguous cases
+languages = contextual_detect(sentences, languages=["zh", "en"])
+print(languages)
+# Output: ['zh', 'zh', 'zh', 'zh', 'zh', 'en', 'en']
+
+# Force a specific language for all sentences
+languages = contextual_detect(sentences, languages=["en"])
+print(languages)
+# Output: ['en', 'en', 'en', 'en', 'en', 'en', 'en']
 ```
 
 ## Dependencies

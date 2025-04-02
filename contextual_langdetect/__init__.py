@@ -4,10 +4,9 @@ from contextual_langdetect.detection import (
     DetectionResult,
     Language,
     LanguageState,
+    contextual_detect,
     detect_language,
     get_language_probabilities,
-    process_batch,
-    process_document,
 )
 
 __all__ = [
@@ -16,6 +15,5 @@ __all__ = [
     "LanguageState",
     "detect_language",
     "get_language_probabilities",
-    "process_batch",
-    "process_document",
+    "contextual_detect",
 ]

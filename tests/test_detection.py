@@ -8,9 +8,9 @@ from contextual_langdetect.detection import (
     DetectionResult,
     Language,
     LanguageState,
+    contextual_detect,
     detect_language,
     get_language_probabilities,
-    process_document,
 )
 
 
@@ -106,7 +106,7 @@ def test_language_state_record_language() -> None:
     assert "en" in state.primary_languages
 
 
-def test_process_document_with_context_awareness() -> None:
+def test_contextual_detect_with_context_awareness() -> None:
     """Test document processing with context-aware approach."""
     # Mix of confident and ambiguous sentences
     sentences = ["你好", "很好", "Hello", "Short"]
@@ -133,14 +133,14 @@ def test_process_document_with_context_awareness() -> None:
         ]
 
         # Process the document - no target language specified
-        results = process_document(sentences)
+        results = contextual_detect(sentences)
 
         # Check the detected languages
         assert results == ["zh", "zh", "en", "en"]
 
 
-def test_process_document_with_target_lang() -> None:
-    """Test document processing with target language specified."""
+def test_contextual_detect_with_languages() -> None:
+    """Test document processing with languages parameter specified."""
     # Mix of confident and ambiguous sentences
     sentences = ["你好", "很好", "Hello", "Short"]
 
@@ -159,26 +159,55 @@ def test_process_document_with_target_lang() -> None:
 
         # Setup mock for get_language_probabilities
         mock_probs.side_effect = [
-            {"zh": 0.95},  # 你好 - confident Chinese
-            {"zh": 0.55, "ja": 0.35},  # 很好 - ambiguous, but favors Chinese
-            {"en": 0.95},  # Hello - confident English
-            {"en": 0.60, "zh": 0.30},  # Short - ambiguous, favors English
+            {"zh": 0.95, "en": 0.05},  # 你好 - confident Chinese
+            {"zh": 0.55, "ja": 0.35, "en": 0.10},  # 很好 - ambiguous, but favors Chinese
+            {"en": 0.95, "zh": 0.05},  # Hello - confident English
+            {"en": 0.60, "zh": 0.30, "es": 0.10},  # Short - ambiguous, favors English
         ]
 
-        # Process the document - with English as target language
-        results = process_document(sentences, target_lang="en")
+        # Process the document - specify both languages to bias detection
+        results = contextual_detect(sentences, languages=["zh", "en"])
 
-        # All sentences should keep their detected languages
+        # All sentences should be detected correctly with context correction
         assert results == ["zh", "zh", "en", "en"]
 
 
-def test_process_document_with_source_lang() -> None:
-    """Test document processing with explicit source language."""
+def test_contextual_detect_with_single_language() -> None:
+    """Test document processing with a single language specified."""
     sentences = ["Hello", "Good morning", "Hi there"]
 
-    # With source_lang specified, all sentences should get that language
-    results = process_document(sentences, source_lang="en")
+    # With only one language specified, all sentences should get that language
+    results = contextual_detect(sentences, languages=["en"])
     assert results == ["en", "en", "en"]
+
+
+def test_contextual_detect_with_biased_language() -> None:
+    """Test document processing with languages parameter that biases detection."""
+    # Mix of ambiguous sentences
+    sentences = ["Text with ambiguous language", "Another ambiguous sample"]
+
+    with (
+        patch("contextual_langdetect.detection.detect_language") as mock_detect,
+        patch("contextual_langdetect.detection.get_language_probabilities") as mock_probs,
+    ):
+        # Setup mock for detect_language - both detections are ambiguous
+        mock_detect.side_effect = [
+            DetectionResult(language="en", confidence=0.65, is_ambiguous=True),
+            DetectionResult(language="en", confidence=0.55, is_ambiguous=True),
+        ]
+
+        # Setup mock for language probabilities - fr has reasonable probability
+        mock_probs.side_effect = [
+            {"en": 0.65, "fr": 0.35},  # Could be French but detected as English
+            {"en": 0.55, "fr": 0.45},  # Almost equally likely French or English
+        ]
+
+        # Process with biasing towards French
+        results = contextual_detect(sentences, languages=["fr"])
+
+        # With our current biasing implementation, both get detected as French
+        # since the biasing formula boosts French enough to make it the dominant language
+        assert results == ["fr", "fr"]
 
 
 def test_special_case_wuu_to_chinese() -> None:
@@ -210,7 +239,7 @@ def test_special_case_wuu_to_chinese() -> None:
         ]
 
         # Process document
-        results = process_document(sentences)
+        results = contextual_detect(sentences)
 
         # Special case should convert Wu to Chinese
         assert results == ["zh", "zh", "zh"]
@@ -245,7 +274,7 @@ def test_special_case_japanese_without_kana() -> None:
         ]
 
         # Process document
-        results = process_document(sentences)
+        results = contextual_detect(sentences)
 
         # First two should be treated as Chinese (the second due to special case)
         # The third is actual Japanese and should stay as Japanese

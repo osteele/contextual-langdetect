@@ -63,7 +63,7 @@ The library uses configurable thresholds:
 
 3. **Performance**
    - Process documents in batches rather than individual sentences
-   - Use `process_document()` instead of multiple `detect_language()` calls
+   - Use `contextual_detect()` instead of multiple `detect_language()` calls
    - Consider sentence length when setting confidence thresholds
 
 ## Limitations of Per-Sentence Detection
@@ -139,7 +139,7 @@ The library includes special case handling for common language detection challen
 ### Process a Document with Context Awareness
 
 ```python
-from contextual_langdetect import process_document
+from contextual_langdetect import contextual_detect
 
 # List of sentences to analyze
 sentences = [
@@ -151,7 +151,7 @@ sentences = [
 ]
 
 # Process with context awareness
-languages = process_document(sentences)
+languages = contextual_detect(sentences)
 
 # Print results
 for sentence, lang in zip(sentences, languages):

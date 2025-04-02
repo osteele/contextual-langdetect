@@ -16,9 +16,9 @@ from rich.table import Table
 
 from contextual_langdetect.detection import (
     DetectionResult,
+    contextual_detect,
     detect_language,
     get_language_probabilities,
-    process_document,
 )
 from contextual_langdetect.exceptions import LanguageDetectionError
 
@@ -116,7 +116,7 @@ def process_file_with_context(file_path: str) -> None:
     console.print(line_table)
 
     # Process using the context-aware approach
-    context_aware_results = process_document([item[0].text for item in first_pass_results])
+    context_aware_results = contextual_detect([item[0].text for item in first_pass_results])
 
     # Compact summary table (only content lines)
     console.print("\n[bold green]=== CONTEXT-AWARE RESULTS ===[/bold green]")

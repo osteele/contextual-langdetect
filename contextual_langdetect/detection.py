@@ -1,9 +1,8 @@
 """Language detection and processing functionality."""
 
-from collections.abc import Callable, Sequence
+from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any
 
 import fast_langdetect
 
@@ -113,10 +112,9 @@ def get_language_probabilities(text: str, model: ModelSize = ModelSize.SMALL) ->
     return {item["lang"]: float(item["score"]) for item in result}
 
 
-def process_document(
+def contextual_detect(
     sentences: Sequence[str],
-    target_lang: Language | None = None,
-    source_lang: Language | None = None,
+    languages: Sequence[Language] | None = None,
     model: ModelSize = ModelSize.SMALL,
     context_correction: bool = True,
 ) -> list[Language]:
@@ -124,8 +122,8 @@ def process_document(
 
     Args:
         sentences: The sentences to process.
-        target_lang: Optional target language for filtering.
-        source_lang: Optional explicit source language.
+        languages: Optional sequence of expected languages to bias detection towards.
+                  If provided, ambiguous detections will be biased towards these languages.
         model: Size of model to use (small uses less memory, large may be more accurate).
         context_correction: Whether to apply context correction; if False, returns raw fast-langdetect results.
 
@@ -135,11 +133,9 @@ def process_document(
     Raises:
         LanguageDetectionError: If language detection fails or is ambiguous and cannot be resolved.
     """
-    # When source language is explicitly specified
-    if source_lang:
-        return [source_lang for _ in sentences]
-
-    # No explicit source language - use improved context-aware approach
+    # When only one language is specified and it's the only possible result
+    if languages and len(languages) == 1:
+        return [languages[0] for _ in sentences]
 
     # Step 1: First Pass - Analyze each sentence independently
     first_pass_results: list[tuple[str, DetectionResult, dict[str, float]]] = []
@@ -152,6 +148,41 @@ def process_document(
             # Get full probability distribution
             language_probs = get_language_probabilities(sentence, model=model)
 
+            # If languages are specified, bias probabilities towards those languages
+            if languages:
+                biased_probs: dict[str, float] = {}
+                # Keep only languages from the languages list, with a boost factor
+                boost_factor = 1.2  # Boost specified languages by this factor
+                for lang in languages:
+                    if lang in language_probs:
+                        biased_probs[lang] = language_probs[lang] * boost_factor
+
+                # If we have biased probabilities, normalize them
+                if biased_probs:
+                    # Normalize the biased probabilities
+                    total = sum(biased_probs.values())
+                    if total > 0:  # Avoid division by zero
+                        biased_probs = {k: v / total for k, v in biased_probs.items()}
+
+                    # If the highest biased probability is different from the original detection
+                    if biased_probs:
+                        best_item = max(biased_probs.items(), key=lambda x: x[1])
+                        biased_best_lang: str = best_item[0]
+                        biased_best_prob: float = best_item[1]
+
+                        if biased_best_lang != detection.language:
+                            # Only override if the biased language has a reasonable probability
+                            if biased_best_prob > 0.4:
+                                detection = DetectionResult(
+                                    language=biased_best_lang,
+                                    confidence=biased_best_prob,
+                                    is_ambiguous=biased_best_prob < CONFIDENCE_THRESHOLD,
+                                )
+
+                # Update language_probs with the biased values
+                if biased_probs:
+                    language_probs = biased_probs
+
             # Store results (sentence, detection, probabilities)
             first_pass_results.append((sentence, detection, language_probs))
 
@@ -162,7 +193,7 @@ def process_document(
     # If context correction is disabled, just return raw results from fast-langdetect
     if not context_correction:
         return [detection.language for _, detection, _ in first_pass_results]
-        
+
     # Step 2: Find document-level language statistics
     language_counts: dict[Language, int] = {}
     confident_language_counts: dict[Language, int] = {}
@@ -177,8 +208,11 @@ def process_document(
     # Step 3: Document-level language assessment - find primary languages
     primary_languages: list[Language] = []
 
-    # If we have confident detections, use those as our primary languages
-    if confident_language_counts:
+    # If languages parameter is provided, prioritize those languages
+    if languages:
+        primary_languages = list(languages)
+    # Otherwise determine primary languages from detection statistics
+    elif confident_language_counts:
         # Get languages with significant presence (>10% of sentences or at least 1)
         threshold = max(1, len(first_pass_results) * 0.1)
         primary_languages = [lang for lang, count in confident_language_counts.items() if count >= threshold]
@@ -193,11 +227,6 @@ def process_document(
     final_languages: list[Language] = []
 
     for sentence, detection, probs in first_pass_results:
-        # If target language is specified and this sentence is already in target language, keep it
-        if target_lang and detection.language == target_lang:
-            final_languages.append(detection.language)
-            continue
-
         detected_lang = detection.language
 
         # If detection is ambiguous, try to resolve with context
@@ -221,7 +250,7 @@ def process_document(
             # If not handled by special cases, use standard probability-based approach
             else:
                 # Find the primary language with highest probability
-                best_lang = None
+                best_lang: str | None = None
                 best_score = 0.0
 
                 for lang in primary_languages:
@@ -232,39 +261,9 @@ def process_document(
                         best_lang = lang
 
                 # If we found a match with reasonable probability, use it
-                if best_lang and best_score > 0.3:
+                if best_lang is not None and best_score > 0.3:
                     detected_lang = best_lang
 
         final_languages.append(detected_lang)
 
     return final_languages
-
-
-def process_batch(
-    sentences: Sequence[str],
-    target_lang: Language | None = None,
-    source_lang: Language | None = None,
-    model: ModelSize = ModelSize.SMALL,
-    context_correction: bool = True,
-) -> list[Language]:
-    """Process a batch of sentences with context awareness.
-
-    This is a synonym for process_document, provided for compatibility.
-
-    Args:
-        sentences: The sentences to process.
-        target_lang: Optional target language.
-        source_lang: Optional explicit source language.
-        model: Size of model to use (small uses less memory, large may be more accurate).
-        context_correction: Whether to apply context correction; if False, returns raw fast-langdetect results.
-
-    Returns:
-        List of detected language codes.
-    """
-    return process_document(
-        sentences=sentences, 
-        target_lang=target_lang, 
-        source_lang=source_lang, 
-        model=model,
-        context_correction=context_correction
-    )
