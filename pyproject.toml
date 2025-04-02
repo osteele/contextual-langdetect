@@ -1,6 +1,6 @@
 [project]
 name = "contextual-langdetect"
-version = "0.1.0"
+version = "0.1.1"
 description = "Context-aware language detection with improved accuracy for multilingual documents"
 authors = [
     {name = "Oliver Steele", email = "steele@osteele.com"},
@@ -54,6 +54,7 @@ stubPath = "stubs"
 
 [tool.hatch.build.targets.wheel]
 packages = ["contextual_langdetect"]
+include = ["contextual_langdetect/py.typed"]
 
 [dependency-groups]
 dev = [
