@@ -1,0 +1,76 @@
+[project]
+name = "contextual-langdetect"
+version = "0.1.0"
+description = "Context-aware language detection with improved accuracy for multilingual documents"
+authors = [
+    {name = "Oliver Steele", email = "steele@osteele.com"},
+]
+readme = "README.md"
+license = {text = "MIT"}
+keywords = [
+    "language-detection",
+    "nlp",
+    "natural-language-processing",
+    "multilingual",
+    "linguistics",
+    "i18n",
+    "context-aware"
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Text Processing",
+    "Topic :: Text Processing :: Linguistic",
+]
+dependencies = [
+    "fast-langdetect>=0.3.2",
+    "rich>=13.7.0",
+]
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle
+    "F",   # pyflakes
+    "I",   # isort
+]
+
+[tool.pyright]
+include = ["tools", "contextual_langdetect"]
+typeCheckingMode = "strict"
+stubPath = "stubs"
+
+[project.urls]
+"Homepage" = "https://github.com/osteele/contextual-langdetect"
+"Bug Tracker" = "https://github.com/osteele/contextual-langdetect/issues"
+"Documentation" = "https://github.com/osteele/contextual-langdetect"
+"Changelog" = "https://github.com/osteele/contextual-langdetect/blob/main/CHANGELOG.md"
+
+[tool.hatch.build.targets.wheel]
+packages = ["contextual_langdetect"]
+
+[dependency-groups]
+dev = [
+    "pyright>=1.1.398",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.0",
+    "pytest-mock>=3.14.0",
+    "rich>=14.0.0",
+    "ruff>=0.11.2",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

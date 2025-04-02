@@ -1,0 +1,23 @@
+# Mandarin sentences that are potential ambiguous with Wu at the n-gram level
+
+#GTP-4o
+你个傻瓜！
+
+#o3-mini-hight
+哎呀,真热啊!
+看,这儿真漂亮!
+好久不见,你吃了吗?
+
+#deepseek-v3
+哇，他买了五个苹果。
+这里有十个学生。
+你有三个朋友在这里。
+今天天气很好。
+他们在家里吃饭。
+
+#deepseek-r1
+这个东西多少钱?
+他有一本书。
+不要吃饭了!
+今天好热啊!
+我们去买衣服吧。
