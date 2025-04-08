@@ -1,0 +1,900 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+        <meta name="description" content="A context-aware language detection library">
+      
+      
+        <meta name="author" content="Oliver Steele">
+      
+      
+      
+      
+      
+      <link rel="icon" href="../assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.6.1, mkdocs-material-9.6.11">
+    
+    
+      
+        <title>Context-Aware Language Detection - contextual-langdetect</title>
+      
+    
+    
+      <link rel="stylesheet" href="../assets/stylesheets/main.4af4bdda.min.css">
+      
+        
+        <link rel="stylesheet" href="../assets/stylesheets/palette.06af60db.min.css">
+      
+      
+
+
+    
+    
+      
+    
+    
+      
+        
+        
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto:300,300i,400,400i,700,700i%7CRoboto+Mono:400,400i,700,700i&display=fallback">
+        <style>:root{--md-text-font:"Roboto";--md-code-font:"Roboto Mono"}</style>
+      
+    
+    
+    <script>__md_scope=new URL("..",location),__md_hash=e=>[...e].reduce(((e,_)=>(e<<5)-e+_.charCodeAt(0)),0),__md_get=(e,_=localStorage,t=__md_scope)=>JSON.parse(_.getItem(t.pathname+"."+e)),__md_set=(e,_,t=localStorage,a=__md_scope)=>{try{t.setItem(a.pathname+"."+e,JSON.stringify(_))}catch(e){}}</script>
+    
+      
+
+    
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="indigo" data-md-color-accent="indigo">
+  
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#context-aware-language-detection" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+  
+
+<header class="md-header md-header--shadow" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href=".." title="contextual-langdetect" class="md-header__button md-logo" aria-label="contextual-langdetect" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            contextual-langdetect
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Context-Aware Language Detection
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+      
+    
+    
+    
+    
+      
+      
+        <label class="md-header__button md-icon" for="__search">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        </label>
+        <div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" name="query" aria-label="Search" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="search-query" required>
+      <label class="md-search__icon md-icon" for="__search">
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M9.5 3A6.5 6.5 0 0 1 16 9.5c0 1.61-.59 3.09-1.56 4.23l.27.27h.79l5 5-1.5 1.5-5-5v-.79l-.27-.27A6.52 6.52 0 0 1 9.5 16 6.5 6.5 0 0 1 3 9.5 6.5 6.5 0 0 1 9.5 3m0 2C7 5 5 7 5 9.5S7 14 9.5 14 14 12 14 9.5 12 5 9.5 5"/></svg>
+        
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11z"/></svg>
+      </label>
+      <nav class="md-search__options" aria-label="Search">
+        
+        <button type="reset" class="md-search__icon md-icon" title="Clear" aria-label="Clear" tabindex="-1">
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+        </button>
+      </nav>
+      
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="search-result">
+          <div class="md-search-result__meta">
+            Initializing search
+          </div>
+          <ol class="md-search-result__list" role="presentation"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+      
+    
+    
+      <div class="md-header__source">
+        <a href="https://github.com/osteele/contextual-langdetect" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+      </div>
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href=".." title="contextual-langdetect" class="md-nav__button md-logo" aria-label="contextual-langdetect" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54"/></svg>
+
+    </a>
+    contextual-langdetect
+  </label>
+  
+    <div class="md-nav__source">
+      <a href="https://github.com/osteele/contextual-langdetect" title="Go to repository" class="md-source" data-md-component="source">
+  <div class="md-source__icon md-icon">
+    
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><!--! Font Awesome Free 6.7.2 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2024 Fonticons, Inc.--><path d="M439.55 236.05 244 40.45a28.87 28.87 0 0 0-40.81 0l-40.66 40.63 51.52 51.52c27.06-9.14 52.68 16.77 43.39 43.68l49.66 49.66c34.23-11.8 61.18 31 35.47 56.69-26.49 26.49-70.21-2.87-56-37.34L240.22 199v121.85c25.3 12.54 22.26 41.85 9.08 55a34.34 34.34 0 0 1-48.55 0c-17.57-17.6-11.07-46.91 11.25-56v-123c-20.8-8.51-24.6-30.74-18.64-45L142.57 101 8.45 235.14a28.86 28.86 0 0 0 0 40.81l195.61 195.6a28.86 28.86 0 0 0 40.8 0l194.69-194.69a28.86 28.86 0 0 0 0-40.81"/></svg>
+  </div>
+  <div class="md-source__repository">
+    GitHub
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../index.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Home
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../development.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Development
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Documentation
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
+            <span class="md-nav__icon md-icon"></span>
+            Documentation
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/context_aware_detection.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Context-Aware Detection
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+      
+        
+      
+        
+      
+    
+    
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+          
+        
+        <input class="md-nav__toggle md-toggle md-toggle--indeterminate" type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    Development Tools
+    
+  </span>
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            Development Tools
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/analyze_text_tool.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Text Analysis Tool
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../docs/detect_languages_tool.md" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    Language Detection Tool
+    
+  </span>
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      Overview
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#how-it-works" class="md-nav__link">
+    <span class="md-ellipsis">
+      How It Works
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#example-chinese-text-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      Example: Chinese Text Processing
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Cases
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Special Cases">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#japanese-vs-chinese" class="md-nav__link">
+    <span class="md-ellipsis">
+      Japanese vs Chinese
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#wu-chinese-wuu" class="md-nav__link">
+    <span class="md-ellipsis">
+      Wu Chinese (wuu)
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#configuration" class="md-nav__link">
+    <span class="md-ellipsis">
+      Configuration
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#best-practices" class="md-nav__link">
+    <span class="md-ellipsis">
+      Best Practices
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitations-of-per-sentence-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitations of Per-Sentence Detection
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#two-pass-context-aware-approach" class="md-nav__link">
+    <span class="md-ellipsis">
+      Two-Pass Context-Aware Approach
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#statistical-language-model" class="md-nav__link">
+    <span class="md-ellipsis">
+      Statistical Language Model
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#special-case-handling" class="md-nav__link">
+    <span class="md-ellipsis">
+      Special Case Handling
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#api-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      API Usage
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="API Usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#process-a-document-with-context-awareness" class="md-nav__link">
+    <span class="md-ellipsis">
+      Process a Document with Context Awareness
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#access-lower-level-apis" class="md-nav__link">
+    <span class="md-ellipsis">
+      Access Lower-Level APIs
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#benefits-of-context-aware-detection" class="md-nav__link">
+    <span class="md-ellipsis">
+      Benefits of Context-Aware Detection
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#limitations" class="md-nav__link">
+    <span class="md-ellipsis">
+      Limitations
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          
+            <div class="md-content" data-md-component="content">
+              <article class="md-content__inner md-typeset">
+                
+                  
+
+
+  
+  
+
+
+<h1 id="context-aware-language-detection">Context-Aware Language Detection<a class="headerlink" href="#context-aware-language-detection" title="Permanent link">&para;</a></h1>
+<h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
+<p>contextual-langdetect uses document-level context to improve language detection accuracy in mixed-language corpora. It's particularly useful when you have a strong prior belief about the number and distribution of languages in your corpus.</p>
+<h2 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>First Pass</strong>: Each sentence is analyzed independently using fast-langdetect</li>
+<li><strong>Context Building</strong>:</li>
+<li>Identifies primary languages (those appearing in &gt;10% of sentences)</li>
+<li>Builds confidence scores for each detected language</li>
+<li><strong>Ambiguity Resolution</strong>:</li>
+<li>Uses document context to resolve ambiguous cases</li>
+<li>Applies special case handling for known detection challenges</li>
+</ol>
+<h2 id="example-chinese-text-processing">Example: Chinese Text Processing<a class="headerlink" href="#example-chinese-text-processing" title="Permanent link">&para;</a></h2>
+<p>Consider a corpus of primarily Chinese text. Individual sentences might be misidentified:</p>
+<div class="highlight"><pre><span></span><code><span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;中国是一个伟大的国家&quot;</span><span class="p">,</span>  <span class="c1"># Clearly Mandarin</span>
+    <span class="s2">&quot;你好&quot;</span><span class="p">,</span>                 <span class="c1"># Could be detected as zh/ja/wuu</span>
+    <span class="s2">&quot;谢谢大家&quot;</span><span class="p">,</span>             <span class="c1"># Could be ambiguous</span>
+    <span class="s2">&quot;我很高兴见到你&quot;</span>         <span class="c1"># Could be detected as Japanese without kana</span>
+<span class="p">]</span>
+</code></pre></div>
+<p>The library will:
+1. Detect that Mandarin is the primary language
+2. Notice that some sentences are detected as Japanese but lack kana characters
+3. Resolve these ambiguous cases in favor of Mandarin</p>
+<h2 id="special-cases">Special Cases<a class="headerlink" href="#special-cases" title="Permanent link">&para;</a></h2>
+<h3 id="japanese-vs-chinese">Japanese vs Chinese<a class="headerlink" href="#japanese-vs-chinese" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Japanese text typically contains kana (hiragana/katakana) characters</li>
+<li>If a sentence is detected as Japanese but contains no kana, in a Chinese context it's likely Chinese</li>
+</ul>
+<h3 id="wu-chinese-wuu">Wu Chinese (wuu)<a class="headerlink" href="#wu-chinese-wuu" title="Permanent link">&para;</a></h3>
+<ul>
+<li>Wu Chinese shares many characters with Mandarin</li>
+<li>In a primarily Mandarin context, sentences detected as Wu are likely Mandarin</li>
+</ul>
+<h2 id="configuration">Configuration<a class="headerlink" href="#configuration" title="Permanent link">&para;</a></h2>
+<p>The library uses configurable thresholds:
+- Primary language threshold: 10% of sentences
+- Confidence threshold: 0.70 for ambiguity detection
+- Alternative language probability threshold: 0.30 for considering alternative languages</p>
+<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<ol>
+<li><strong>Document Structure</strong></li>
+<li>Group related sentences together</li>
+<li>Process complete documents rather than isolated sentences</li>
+<li>
+<p>Keep context boundaries (e.g., paragraphs, sections) intact</p>
+</li>
+<li>
+<p><strong>Language Distribution</strong></p>
+</li>
+<li>Works best when there's a clear primary language</li>
+<li>Handles 1-2 primary languages well</li>
+<li>
+<p>May need tuning for documents with many equally represented languages</p>
+</li>
+<li>
+<p><strong>Performance</strong></p>
+</li>
+<li>Process documents in batches rather than individual sentences</li>
+<li>Use <code>contextual_detect()</code> instead of multiple <code>detect_language()</code> calls</li>
+<li>Consider sentence length when setting confidence thresholds</li>
+</ol>
+<h2 id="limitations-of-per-sentence-detection">Limitations of Per-Sentence Detection<a class="headerlink" href="#limitations-of-per-sentence-detection" title="Permanent link">&para;</a></h2>
+<p>Traditional language detection analyzes each sentence in isolation, which has limitations:
+- Short phrases may have insufficient linguistic features for reliable detection
+- Some phrases look similar across related languages (e.g., Chinese, Japanese)
+- No benefit from the context of surrounding text</p>
+<h2 id="two-pass-context-aware-approach">Two-Pass Context-Aware Approach<a class="headerlink" href="#two-pass-context-aware-approach" title="Permanent link">&para;</a></h2>
+<p>contextual-langdetect addresses these limitations with a context-aware approach:</p>
+<ol>
+<li><strong>First Pass - Independent Analysis:</strong></li>
+<li>Process each sentence independently with fast-langdetect</li>
+<li>Classify each detection as "confident" or "ambiguous" based on confidence score</li>
+<li>For confident detections (above threshold), trust the detected language</li>
+<li>
+<p>For ambiguous detections (below threshold), mark for further processing</p>
+</li>
+<li>
+<p><strong>Document-Level Language Analysis:</strong></p>
+</li>
+<li>Identify primary languages from confident detections</li>
+<li>Find languages that appear with significant frequency (&gt;10% of sentences)</li>
+<li>Create a statistical model of the document's language distribution</li>
+<li>
+<p>Apply a prior assumption that documents typically contain 1-2 primary languages</p>
+</li>
+<li>
+<p><strong>Second Pass - Context Resolution:</strong></p>
+</li>
+<li>For ambiguous sentences, use the document context to make better decisions</li>
+<li>Look at probability distribution across languages</li>
+<li>Select the most likely primary language based on both sentence-level probabilities and document-level statistics</li>
+</ol>
+<p>This mimics how humans use context to understand language - we naturally use surrounding text to help decode ambiguous phrases.</p>
+<h2 id="statistical-language-model">Statistical Language Model<a class="headerlink" href="#statistical-language-model" title="Permanent link">&para;</a></h2>
+<p>The statistical model used for context-aware detection is based on Bayesian principles:</p>
+<ol>
+<li><strong>Prior assumption:</strong> Documents typically contain 1-2 primary languages</li>
+<li>This is implemented by focusing on languages that appear in &gt;10% of confident detections</li>
+<li>
+<p>Languages with only occasional appearances are considered less likely to be the document's primary language</p>
+</li>
+<li>
+<p><strong>Language distribution analysis:</strong></p>
+</li>
+<li>Track frequency of each confidently detected language</li>
+<li>Calculate language prevalence as percentage of total document</li>
+<li>Languages that appear frequently (above the 10% threshold) are identified as "primary languages"</li>
+<li>
+<p>In most cases, this results in 1-2 languages being identified as primary</p>
+</li>
+<li>
+<p><strong>Bayesian-inspired disambiguation:</strong></p>
+</li>
+<li>For ambiguous sentences, examine their individual language probability distributions</li>
+<li>Combine these with the document's language distribution (prior)</li>
+<li>Select the language that maximizes P(language | sentence) × P(language | document)</li>
+<li>This balances individual sentence evidence with document-level context</li>
+</ol>
+<p>This approach is particularly effective for documents with consistent language patterns, such as:
+- Single-language documents with occasional ambiguous phrases
+- Alternating language patterns (e.g., bilingual conversations)
+- Documents with one primary language and occasional phrases in another language</p>
+<h2 id="special-case-handling">Special Case Handling<a class="headerlink" href="#special-case-handling" title="Permanent link">&para;</a></h2>
+<p>The library includes special case handling for common language detection challenges:</p>
+<ol>
+<li><strong>Wu Chinese (wuu) correction</strong></li>
+<li>Wu Chinese is often detected as a separate language from Mandarin Chinese</li>
+<li>
+<p>When Wu is detected with low confidence and Mandarin is a primary language, treat as Mandarin</p>
+</li>
+<li>
+<p><strong>Chinese/Japanese disambiguation</strong></p>
+</li>
+<li>Some Chinese sentences are misdetected as Japanese due to shared characters</li>
+<li>When a sentence is detected as Japanese without any kana characters, and Chinese is a primary language,
+     treat it as Chinese</li>
+</ol>
+<h2 id="api-usage">API Usage<a class="headerlink" href="#api-usage" title="Permanent link">&para;</a></h2>
+<h3 id="process-a-document-with-context-awareness">Process a Document with Context Awareness<a class="headerlink" href="#process-a-document-with-context-awareness" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">contextual_langdetect</span><span class="w"> </span><span class="kn">import</span> <span class="n">contextual_detect</span>
+
+<span class="c1"># List of sentences to analyze</span>
+<span class="n">sentences</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;Hello world&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;This is English&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;你好世界&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;这是中文&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Short text&quot;</span>  <span class="c1"># Ambiguous due to length</span>
+<span class="p">]</span>
+
+<span class="c1"># Process with context awareness</span>
+<span class="n">languages</span> <span class="o">=</span> <span class="n">contextual_detect</span><span class="p">(</span><span class="n">sentences</span><span class="p">)</span>
+
+<span class="c1"># Print results</span>
+<span class="k">for</span> <span class="n">sentence</span><span class="p">,</span> <span class="n">lang</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">sentences</span><span class="p">,</span> <span class="n">languages</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">sentence</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">lang</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</code></pre></div>
+<h3 id="access-lower-level-apis">Access Lower-Level APIs<a class="headerlink" href="#access-lower-level-apis" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kn">from</span><span class="w"> </span><span class="nn">contextual_langdetect</span><span class="w"> </span><span class="kn">import</span> <span class="n">detect_language</span><span class="p">,</span> <span class="n">get_language_probabilities</span>
+
+<span class="c1"># Get detailed detection result</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">detect_language</span><span class="p">(</span><span class="s2">&quot;Hello world&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Language: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">language</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Confidence: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">confidence</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Is ambiguous: </span><span class="si">{</span><span class="n">result</span><span class="o">.</span><span class="n">is_ambiguous</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="c1"># Get probability distribution</span>
+<span class="n">probs</span> <span class="o">=</span> <span class="n">get_language_probabilities</span><span class="p">(</span><span class="s2">&quot;Hello 你好&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">probs</span><span class="p">)</span>  <span class="c1"># {&#39;en&#39;: 0.6, &#39;zh&#39;: 0.4}</span>
+</code></pre></div>
+<h2 id="benefits-of-context-aware-detection">Benefits of Context-Aware Detection<a class="headerlink" href="#benefits-of-context-aware-detection" title="Permanent link">&para;</a></h2>
+<ul>
+<li><strong>Improved accuracy</strong> for short phrases and sentences</li>
+<li><strong>Reduced need</strong> for explicit language specification</li>
+<li><strong>More consistent results</strong> for mixed-language documents</li>
+<li><strong>Mimics human understanding</strong> of language in context</li>
+<li><strong>Graceful degradation</strong> when detection is challenging</li>
+</ul>
+<h2 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Language detection is probabilistic and may not be perfect</li>
+<li>Very short sentences (1-2 words) remain challenging</li>
+<li>Closely related languages can be difficult to distinguish</li>
+<li>Depends on fast-langdetect's capabilities and limitations</li>
+</ul>
+
+
+
+
+
+
+
+
+
+
+
+
+                
+              </article>
+            </div>
+          
+          
+<script>var target=document.getElementById(location.hash.slice(1));target&&target.name&&(target.checked=target.name.startsWith("__tabbed_"))</script>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+    <div class="md-copyright__highlight">
+      Copyright &copy; 2025 Oliver Steele
+    </div>
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    
+    
+    
+      
+      <script id="__config" type="application/json">{"base": "..", "features": ["navigation.instant", "navigation.tracking", "navigation.expand", "navigation.indexes", "content.code.copy"], "search": "../assets/javascripts/workers/search.f8cc74c7.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+    
+    
+      <script src="../assets/javascripts/bundle.c8b220af.min.js"></script>
+      
+    
+  </body>
+</html>
