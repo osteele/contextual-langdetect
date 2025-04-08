@@ -1,6 +1,6 @@
 [project]
 name = "contextual-langdetect"
-version = "0.1.1"
+version = "0.1.2"
 description = "Context-aware language detection with improved accuracy for multilingual documents"
 authors = [{ name = "Oliver Steele", email = "steele@osteele.com" }]
 readme = "README.md"
