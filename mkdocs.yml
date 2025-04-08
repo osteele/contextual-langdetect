@@ -1,0 +1,35 @@
+site_name: contextual-langdetect
+site_description: A context-aware language detection library
+site_author: Oliver Steele
+repo_url: https://github.com/osteele/contextual-langdetect
+copyright: 'Copyright &copy; 2025 Oliver Steele'
+
+theme:
+  name: material
+  palette:
+    primary: indigo
+    accent: indigo
+  features:
+    - navigation.instant
+    - navigation.tracking
+    - navigation.expand
+    - navigation.indexes
+    - content.code.copy
+
+nav:
+  - Home: index.md
+  - Development: development.md
+  - Documentation:
+    - Context-Aware Detection: context_aware_detection.md
+    - Development Tools:
+      - Text Analysis Tool: analyze_text_tool.md
+      - Language Detection Tool: detect_languages_tool.md
+
+markdown_extensions:
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.inlinehilite
+  - pymdownx.tabbed
+  - admonition
+  - toc:
+      permalink: true

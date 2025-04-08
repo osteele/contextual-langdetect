@@ -2,11 +2,9 @@
 name = "contextual-langdetect"
 version = "0.1.1"
 description = "Context-aware language detection with improved accuracy for multilingual documents"
-authors = [
-    {name = "Oliver Steele", email = "steele@osteele.com"},
-]
+authors = [{ name = "Oliver Steele", email = "steele@osteele.com" }]
 readme = "README.md"
-license = {text = "MIT"}
+license = { text = "MIT" }
 keywords = [
     "language-detection",
     "nlp",
@@ -14,7 +12,7 @@ keywords = [
     "multilingual",
     "linguistics",
     "i18n",
-    "context-aware"
+    "context-aware",
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -24,11 +22,14 @@ classifiers = [
     "Topic :: Text Processing",
     "Topic :: Text Processing :: Linguistic",
 ]
-dependencies = [
-    "fast-langdetect>=0.3.2",
-    "rich>=13.7.0",
-]
+dependencies = ["fast-langdetect>=0.3.2", "rich>=13.7.0"]
 requires-python = ">=3.11"
+
+[project.urls]
+Homepage = "https://github.com/osteele/contextual-langdetect"
+Documentation = "https://osteele.github.io/contextual-langdetect/"
+Issues = "https://github.com/osteele/contextual-langdetect/issues"
+Source = "https://github.com/osteele/contextual-langdetect"
 
 [tool.ruff]
 line-length = 120
@@ -36,9 +37,9 @@ target-version = "py311"
 
 [tool.ruff.lint]
 select = [
-    "E",   # pycodestyle
-    "F",   # pyflakes
-    "I",   # isort
+    "E", # pycodestyle
+    "F", # pyflakes
+    "I", # isort
 ]
 
 [tool.pyright]
@@ -46,15 +47,6 @@ include = ["tools", "contextual_langdetect"]
 typeCheckingMode = "strict"
 stubPath = "stubs"
 
-[project.urls]
-"Homepage" = "https://github.com/osteele/contextual-langdetect"
-"Bug Tracker" = "https://github.com/osteele/contextual-langdetect/issues"
-"Documentation" = "https://github.com/osteele/contextual-langdetect"
-"Changelog" = "https://github.com/osteele/contextual-langdetect/blob/main/CHANGELOG.md"
-
-[tool.hatch.build.targets.wheel]
-packages = ["contextual_langdetect"]
-include = ["contextual_langdetect/py.typed"]
 
 [dependency-groups]
 dev = [
@@ -75,3 +67,20 @@ filterwarnings = ["ignore::DeprecationWarning"]
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["contextual_langdetect"]
+include = ["contextual_langdetect/py.typed"]
+
+[tool.hatch.build.targets.sdist]
+include = [
+    "contextual_langdetect/",
+    "docs/",
+    "tests/",
+    "DEVELOPMENT.md",
+    "LICENSE",
+    "README.md",
+    "justfile",
+    "pyproject.toml",
+    "uv.lock",
+]

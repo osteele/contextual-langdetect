@@ -15,6 +15,7 @@ are only one or two primary languages. It uses document-level context to improve
 accuracy in cases where individual sentences might be ambiguously detected.
 
 For example, in a primarily Chinese corpus:
+
 - Some sentences might be detected at an individual level as Japanese, but if
   they don't contain kana characters, they're likely Chinese
 - Some sentences might be detected as Wu Chinese (wuu), but in a Mandarin
@@ -23,6 +24,7 @@ For example, in a primarily Chinese corpus:
   ambiguities
 
 This is particularly useful for:
+
 - Transcriptions of bilingual conversations, including
 - Language instruction texts and transcriptions
 - Mixed-language documents where the majority language should inform ambiguous
@@ -88,37 +90,17 @@ This library builds upon:
 
 ## Development
 
-```bash
-# Clone the repository
-git clone https://github.com/osteele/contextual-langdetect.git
-cd contextual-langdetect
+For development instructions, see [DEVELOPMENT.md](DEVELOPMENT.md).
 
-# Install development dependencies
-just setup
+## Documentation
 
-# Run tests
-just test
+- [Context-Aware Detection](./docs/context_aware_detection.md) - Learn how the context-aware language detection algorithm works
+- [Language Detection Tool](./docs/detect_languages_tool.md) - Documentation for the language detection development tool
 
-# Format code
-just format
+## Related Projects
 
-# Run all checks: format, lint, and tests
-just check
-```
-
-### Development Tools
-
-The repository includes CLI tools for development and testing purposes. These are not included in the package distribution.
-
-```bash
-# Analyze a file with the text analysis tool
-uv run tools/analyze_text.py path/to/textfile.txt
-
-# Generate language statistics from a file
-uv run tools/language_stats.py path/to/textfile.txt
-```
-
-For more detailed information about these tools and other development resources, see the documentation in the [./docs](./docs) directory.
+- [audio2anki](https://github.com/osteele/audio2anki) - Extract audio from video files for creating Anki language flashcards
+- [add2anki](https://github.com/osteele/add2anki) - Browser extension to add words and phrases to Anki language learning decks
 
 ## License
 
