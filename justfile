@@ -31,11 +31,11 @@ run *ARGS:
 
 # Run all tests or a specific test path if provided
 test *ARGS:
-    uv run --dev pytest {{ARGS}}
+    uv run --dev -m pytest {{ARGS}}
 
 # Type check
 typecheck:
-    uv run pyright
+    uv run --dev pyright
 
 #
 # Development tool scripts
