@@ -25,6 +25,16 @@ classifiers = [
 dependencies = ["fast-langdetect>=0.3.2", "rich>=13.7.0"]
 requires-python = ">=3.11"
 
+[dependency-groups]
+dev = [
+    "pyright>=1.1.398",
+    "pytest>=8.3.5",
+    "pytest-cov>=6.1.0",
+    "pytest-mock>=3.14.0",
+    "rich>=14.0.0",
+    "ruff>=0.11.2",
+]
+
 [project.urls]
 Homepage = "https://github.com/osteele/contextual-langdetect"
 Documentation = "https://osteele.github.io/contextual-langdetect/"
@@ -47,17 +57,6 @@ include = ["tools", "contextual_langdetect"]
 typeCheckingMode = "strict"
 stubPath = "stubs"
 
-
-[dependency-groups]
-dev = [
-    "pyright>=1.1.398",
-    "pytest>=8.3.5",
-    "pytest-cov>=6.1.0",
-    "pytest-mock>=3.14.0",
-    "rich>=14.0.0",
-    "ruff>=0.11.2",
-]
-
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 python_files = "test_*.py"
@@ -76,6 +75,7 @@ include = ["contextual_langdetect/py.typed"]
 include = [
     "contextual_langdetect/",
     "docs/",
+    "stubs/",
     "tests/",
     "DEVELOPMENT.md",
     "LICENSE",
