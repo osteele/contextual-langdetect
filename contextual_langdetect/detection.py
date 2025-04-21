@@ -296,3 +296,51 @@ def count_by_language(
         context_correction=context_correction,
     )
     return Counter(detected)
+
+
+def get_languages_by_count(
+    sentences: Sequence[str],
+    languages: Sequence[Language] | None = None,
+    model: ModelSize = ModelSize.SMALL,
+    context_correction: bool = True,
+) -> list[tuple[Language, int]]:
+    """
+    Given a batch of sentences, return a list of (language, count) tuples sorted by decreasing count,
+    using the contextual detection algorithm.
+
+    Args:
+        sentences: The sentences to process.
+        languages: Optional sequence of expected languages to bias detection towards.
+        model: Size of model to use (small uses less memory, large may be more accurate).
+        context_correction: Whether to apply context correction; if False, returns raw fast-langdetect results.
+
+    Returns:
+        List of (language, count) tuples sorted by decreasing count.
+    """
+    counts = count_by_language(sentences, languages=languages, model=model, context_correction=context_correction)
+    return sorted(counts.items(), key=lambda x: x[1], reverse=True)
+
+
+def get_majority_language(
+    sentences: Sequence[str],
+    languages: Sequence[Language] | None = None,
+    model: ModelSize = ModelSize.SMALL,
+    context_correction: bool = True,
+) -> Language | None:
+    """
+    Given a batch of sentences, return the language code with the highest count
+    (the majority language), or None if there are no sentences.
+
+    Args:
+        sentences: The sentences to process.
+        languages: Optional sequence of expected languages to bias detection towards.
+        model: Size of model to use (small uses less memory, large may be more accurate).
+        context_correction: Whether to apply context correction; if False, returns raw fast-langdetect results.
+
+    Returns:
+        The majority language code, or None if there are no sentences.
+    """
+    counts = count_by_language(sentences, languages=languages, model=model, context_correction=context_correction)
+    if not counts:
+        return None
+    return max(counts.items(), key=lambda x: x[1])[0]

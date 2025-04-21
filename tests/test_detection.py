@@ -12,6 +12,8 @@ from contextual_langdetect.detection import (
     count_by_language,
     detect_language,
     get_language_probabilities,
+    get_languages_by_count,
+    get_majority_language,
 )
 
 
@@ -78,7 +80,7 @@ def test_get_language_probabilities() -> None:
         mock_detect.return_value = [{"lang": "zh", "score": 0.95}]
         probs = get_language_probabilities("你好，最近怎么样？")
         assert "zh" in probs
-        assert probs["zh"] == pytest.approx(0.95, abs=0.01)
+        assert probs["zh"] == pytest.approx(0.95, abs=0.01)  # type: ignore
 
 
 def test_language_state_record_language() -> None:
@@ -328,3 +330,33 @@ def test_count_by_language_with_languages_param() -> None:
 
 def test_count_by_language_empty() -> None:
     assert count_by_language([]) == {}
+
+
+def test_get_languages_by_count_basic() -> None:
+    sentences = [
+        "Hello world.",
+        "Bonjour le monde.",
+        "Hallo Welt.",
+        "Hello again.",
+    ]
+    result = get_languages_by_count(sentences)
+    # Should be [('en', 2), ('fr', 1), ('de', 1)] or similar, order by count
+    assert result[0][1] == 2  # Majority count
+    assert len(result) == 3
+    langs = [lang for lang, _ in result]
+    assert set(langs) == {"en", "fr", "de"}
+
+
+def test_get_majority_language_basic() -> None:
+    sentences = [
+        "Hello world.",
+        "Bonjour le monde.",
+        "Hallo Welt.",
+        "Hello again.",
+    ]
+    result = get_majority_language(sentences)
+    assert result == "en"
+
+
+def test_get_majority_language_empty() -> None:
+    assert get_majority_language([]) is None

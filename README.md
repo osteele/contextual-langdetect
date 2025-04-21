@@ -47,6 +47,8 @@ pip install contextual-langdetect
 
 ## Usage
 
+### count_by_language
+
 ```python
 from contextual_langdetect import contextual_detect
 
@@ -81,11 +83,9 @@ print(languages)
 languages = contextual_detect(sentences, languages=["en"])
 print(languages)
 # Output: ['en', 'en', 'en', 'en', 'en', 'en', 'en']
-
-## API
+```
 
 ### count_by_language
-
 ```python
 def count_by_language(
     sentences: Sequence[str],
@@ -109,6 +109,58 @@ sentences = [
 ]
 counts = count_by_language(sentences)
 # Example output: {'en': 2, 'fr': 1, 'de': 1}
+```
+
+### get_languages_by_count
+```python
+def get_languages_by_count(
+    sentences: Sequence[str],
+    languages: Sequence[Language] | None = None,
+    model: ModelSize = ModelSize.SMALL,
+    context_correction: bool = True,
+) -> list[tuple[Language, int]]
+```
+
+Given a batch of sentences, returns a list of (language, count) tuples sorted by decreasing count, using the contextual detection algorithm.
+
+**Example:**
+```python
+from contextual_langdetect.detection import get_languages_by_count
+
+sentences = [
+    "Hello world.",
+    "Bonjour le monde.",
+    "Hallo Welt.",
+    "Hello again.",
+]
+language_counts = get_languages_by_count(sentences)
+# Example output: [('en', 2), ('fr', 1), ('de', 1)]
+```
+
+### get_majority_language
+```python
+def get_majority_language(
+    sentences: Sequence[str],
+    languages: Sequence[Language] | None = None,
+    model: ModelSize = ModelSize.SMALL,
+    context_correction: bool = True,
+) -> Language | None
+```
+
+Given a batch of sentences, returns the language code with the highest count (the majority language), or None if there are no sentences.
+
+**Example:**
+```python
+from contextual_langdetect.detection import get_majority_language
+
+sentences = [
+    "Hello world.",
+    "Bonjour le monde.",
+    "Hallo Welt.",
+    "Hello again.",
+]
+majority_language = get_majority_language(sentences)
+# Example output: 'en'
 ```
 
 ## Dependencies
