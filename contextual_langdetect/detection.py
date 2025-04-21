@@ -1,5 +1,6 @@
 """Language detection and processing functionality."""
 
+from collections import Counter
 from collections.abc import Sequence
 from dataclasses import dataclass
 from enum import Enum
@@ -267,3 +268,31 @@ def contextual_detect(
         final_languages.append(detected_lang)
 
     return final_languages
+
+
+def count_by_language(
+    sentences: Sequence[str],
+    languages: Sequence[Language] | None = None,
+    model: ModelSize = ModelSize.SMALL,
+    context_correction: bool = True,
+) -> Counter[Language]:
+    """
+    Given a batch of sentences, return a Counter mapping language codes to the number of sentences assigned to each
+    language, using the contextual detect algorithm.
+
+    Args:
+        sentences: The sentences to process.
+        languages: Optional sequence of expected languages to bias detection towards.
+        model: Size of model to use (small uses less memory, large may be more accurate).
+        context_correction: Whether to apply context correction; if False, returns raw fast-langdetect results.
+
+    Returns:
+        Counter mapping language codes to sentence counts.
+    """
+    detected = contextual_detect(
+        sentences,
+        languages=languages,
+        model=model,
+        context_correction=context_correction,
+    )
+    return Counter(detected)

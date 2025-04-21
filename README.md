@@ -81,6 +81,34 @@ print(languages)
 languages = contextual_detect(sentences, languages=["en"])
 print(languages)
 # Output: ['en', 'en', 'en', 'en', 'en', 'en', 'en']
+
+## API
+
+### count_by_language
+
+```python
+def count_by_language(
+    sentences: Sequence[str],
+    languages: Sequence[Language] | None = None,
+    model: ModelSize = ModelSize.SMALL,
+    context_correction: bool = True,
+) -> dict[Language, int]
+```
+
+Given a batch of sentences, returns a dict mapping language codes to the number of sentences assigned to each language, using the contextual detection algorithm.
+
+**Example:**
+```python
+from contextual_langdetect.detection import count_by_language
+
+sentences = [
+    "Hello world.",
+    "Bonjour le monde.",
+    "Hallo Welt.",
+    "Hello again.",
+]
+counts = count_by_language(sentences)
+# Example output: {'en': 2, 'fr': 1, 'de': 1}
 ```
 
 ## Dependencies

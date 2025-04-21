@@ -9,6 +9,7 @@ from contextual_langdetect.detection import (
     Language,
     LanguageState,
     contextual_detect,
+    count_by_language,
     detect_language,
     get_language_probabilities,
 )
@@ -298,3 +299,32 @@ def test_confidence_threshold_impact() -> None:
 
                     # Verify ambiguity is correctly determined by threshold
                     assert result.is_ambiguous == (confidence < threshold)
+
+
+def test_count_by_language_basic() -> None:
+    sentences = [
+        "Hello world.",
+        "Bonjour le monde.",
+        "Hallo Welt.",
+        "Hello again.",
+    ]
+    # Patch contextual_detect to return a known sequence
+    with patch("contextual_langdetect.detection.contextual_detect") as mock_detect:
+        mock_detect.return_value = ["en", "fr", "de", "en"]
+        counts = count_by_language(sentences)
+        assert counts["en"] == 2
+        assert counts["fr"] == 1
+        assert counts["de"] == 1
+        assert sum(counts.values()) == 4
+
+
+def test_count_by_language_with_languages_param() -> None:
+    sentences = ["a", "b", "c"]
+    with patch("contextual_langdetect.detection.contextual_detect") as mock_detect:
+        mock_detect.return_value = ["es", "es", "fr"]
+        counts = count_by_language(sentences, languages=["es", "fr"])
+        assert counts == {"es": 2, "fr": 1}
+
+
+def test_count_by_language_empty() -> None:
+    assert count_by_language([]) == {}
