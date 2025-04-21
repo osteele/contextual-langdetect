@@ -1,5 +1,6 @@
 # contextual-langdetect
 
+[![CI](https://github.com/osteele/contextual-langdetect/actions/workflows/ci.yml/badge.svg)](https://github.com/osteele/contextual-langdetect/actions/workflows/ci.yml)
 [![PyPI](https://img.shields.io/pypi/v/contextual-langdetect.svg)](https://pypi.org/project/contextual-langdetect/)
 [![Python](https://img.shields.io/pypi/pyversions/contextual-langdetect.svg)](https://pypi.org/project/contextual-langdetect/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
