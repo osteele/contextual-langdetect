@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Renamed Language to LanguageCode
 - Changed get_languages_by_count to return a list of LanguageCode instead of tuples
 - Updated get_majority_language to return the alphabetically first language if multiple languages are tied
+- Moved rich to development dependencies only
 
 ### Added
 - Documentation for LanguageCode specifying it's an ISO 639 2- or 3-letter language code

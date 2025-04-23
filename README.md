@@ -47,7 +47,7 @@ pip install contextual-langdetect
 
 ## Usage
 
-### count_by_language
+### `count_by_language`
 
 ```python
 from contextual_langdetect import contextual_detect
@@ -85,7 +85,7 @@ print(languages)
 # Output: ['en', 'en', 'en', 'en', 'en', 'en', 'en']
 ```
 
-### count_by_language
+### `count_by_language`
 ```python
 def count_by_language(
     sentences: Sequence[str],
@@ -111,7 +111,7 @@ counts = count_by_language(sentences)
 # Example output: {'en': 2, 'fr': 1, 'de': 1}
 ```
 
-### get_languages_by_count
+### `get_languages_by_count`
 ```python
 def get_languages_by_count(
     sentences: Sequence[str],
@@ -137,7 +137,7 @@ language_counts = get_languages_by_count(sentences)
 # Example output: [('en', 2), ('fr', 1), ('de', 1)]
 ```
 
-### get_majority_language
+### `get_majority_language`
 ```python
 def get_majority_language(
     sentences: Sequence[str],
@@ -166,8 +166,9 @@ majority_language = get_majority_language(sentences)
 ## Dependencies
 
 This library builds upon:
-- [fast-langdetect](https://github.com/findworks/fast-langdetect) for base
-  language detection
+- [LlmKira/fast-langdetect](https://github.com/LlmKira/fast-langdetect) for base language detection
+- [zafercavdar/fasttext-langdetect](https://github.com/zafercavdar/fasttext-langdetect) (transitively) , which `LlmKira/fast-langdetect` builds on
+- [FastText](https://fasttext.cc/docs/en/language-identification.html) by Facebook, which both these projects wrap
 
 ## Development
 
@@ -176,12 +177,15 @@ For development instructions, see [DEVELOPMENT.md](DEVELOPMENT.md).
 ## Documentation
 
 - [Context-Aware Detection](./docs/context_aware_detection.md) - Learn how the context-aware language detection algorithm works
-- [Language Detection Tool](./docs/detect_languages_tool.md) - Documentation for the language detection development tool
 
-## Related Projects
+## My Related Projects
 
-- [audio2anki](https://github.com/osteele/audio2anki) - Extract audio from video files for creating Anki language flashcards
-- [add2anki](https://github.com/osteele/add2anki) - Browser extension to add words and phrases to Anki language learning decks
+- [add2anki](https://github.com/osteele/add2anki) - Browser extension to add
+  words and phrases to Anki language learning decks. `contextual-langdetect` was
+  extracted from this.
+- [audio2anki](https://github.com/osteele/audio2anki) - Extract audio from video
+  files for creating Anki language flashcards. `add2anki` was developed to
+  support this and other tools.
 
 ## License
 
