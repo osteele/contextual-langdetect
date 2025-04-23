@@ -6,7 +6,7 @@ import pytest
 
 from contextual_langdetect.detection import (
     DetectionResult,
-    Language,
+    LanguageCode,
     LanguageState,
     contextual_detect,
     count_by_language,
@@ -18,15 +18,15 @@ from contextual_langdetect.detection import (
 
 
 def test_language_type() -> None:
-    """Test Language type alias."""
-    lang: Language = "en"
+    """Test LanguageCode type alias."""
+    lang: LanguageCode = "en"
     assert lang == "en"
 
     # Language is just a string
     assert isinstance(lang, str)
 
     # Can create languages with any string
-    lang2: Language = "invalid"
+    lang2: LanguageCode = "invalid"
     assert lang2 == "invalid"
     assert isinstance(lang2, str)
 
@@ -340,11 +340,10 @@ def test_get_languages_by_count_basic() -> None:
         "Hello again.",
     ]
     result = get_languages_by_count(sentences)
-    # Should be [('en', 2), ('fr', 1), ('de', 1)] or similar, order by count
-    assert result[0][1] == 2  # Majority count
+    # Should be ['en', 'fr', 'de'] or similar, order by count
     assert len(result) == 3
-    langs = [lang for lang, _ in result]
-    assert set(langs) == {"en", "fr", "de"}
+    assert result[0] == "en"  # English should be first (highest count)
+    assert set(result) == {"en", "fr", "de"}
 
 
 def test_get_majority_language_basic() -> None:
@@ -360,3 +359,15 @@ def test_get_majority_language_basic() -> None:
 
 def test_get_majority_language_empty() -> None:
     assert get_majority_language([]) is None
+
+
+def test_get_majority_language_with_tie() -> None:
+    """Test that get_majority_language returns alphabetically first language when tied."""
+    with patch("contextual_langdetect.detection.count_by_language") as mock_count:
+        # Create a tie between 'de' and 'fr' with the same count
+        mock_count.return_value = {"fr": 2, "de": 2, "en": 1}
+
+        result = get_majority_language(["dummy"])
+
+        # 'de' comes before 'fr' alphabetically, so it should be returned
+        assert result == "de"

@@ -2,7 +2,7 @@
 
 from contextual_langdetect.detection import (
     DetectionResult,
-    Language,
+    LanguageCode,
     LanguageState,
     contextual_detect,
     count_by_language,
@@ -14,7 +14,7 @@ from contextual_langdetect.detection import (
 
 __all__ = [
     "DetectionResult",
-    "Language",
+    "LanguageCode",
     "LanguageState",
     "contextual_detect",
     "count_by_language",

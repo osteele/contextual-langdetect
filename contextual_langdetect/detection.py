@@ -18,15 +18,14 @@ class ModelSize(str, Enum):
 
 
 # Type aliases
-Language = str
-LangProbabilities = dict[str, float]  # language code -> probability
+LanguageCode = str  # ISO 639 2- or 3-letter language code
 
 
 @dataclass
 class DetectionResult:
     """Result of language detection including confidence."""
 
-    language: Language
+    language: LanguageCode
     confidence: float
     is_ambiguous: bool = False
 
@@ -35,9 +34,9 @@ class DetectionResult:
 class LanguageState:
     """State for language detection in REPL mode."""
 
-    detected_language: Language | None = None
-    language_history: dict[Language, int] | None = None
-    primary_languages: list[Language] | None = None
+    detected_language: LanguageCode | None = None
+    language_history: dict[LanguageCode, int] | None = None
+    primary_languages: list[LanguageCode] | None = None
 
     def __post_init__(self) -> None:
         """Initialize language history."""
@@ -46,7 +45,7 @@ class LanguageState:
         if self.primary_languages is None:
             self.primary_languages = []
 
-    def record_language(self, language: Language) -> None:
+    def record_language(self, language: LanguageCode) -> None:
         """Record a detected language to build context."""
         if self.language_history is None:
             self.language_history = {}
@@ -93,7 +92,7 @@ def detect_language(text: str, model: ModelSize = ModelSize.SMALL) -> DetectionR
     )
 
 
-def get_language_probabilities(text: str, model: ModelSize = ModelSize.SMALL) -> LangProbabilities:
+def get_language_probabilities(text: str, model: ModelSize = ModelSize.SMALL) -> dict[LanguageCode, float]:
     """Get probability distribution for languages in the text.
 
     Args:
@@ -115,10 +114,10 @@ def get_language_probabilities(text: str, model: ModelSize = ModelSize.SMALL) ->
 
 def contextual_detect(
     sentences: Sequence[str],
-    languages: Sequence[Language] | None = None,
+    languages: Sequence[LanguageCode] | None = None,
     model: ModelSize = ModelSize.SMALL,
     context_correction: bool = True,
-) -> list[Language]:
+) -> list[LanguageCode]:
     """Process a document, detecting the language of each sentence with context awareness.
 
     Args:
@@ -196,8 +195,8 @@ def contextual_detect(
         return [detection.language for _, detection, _ in first_pass_results]
 
     # Step 2: Find document-level language statistics
-    language_counts: dict[Language, int] = {}
-    confident_language_counts: dict[Language, int] = {}
+    language_counts: dict[LanguageCode, int] = {}
+    confident_language_counts: dict[LanguageCode, int] = {}
 
     for _, detection, _ in first_pass_results:
         lang = detection.language
@@ -207,7 +206,7 @@ def contextual_detect(
             confident_language_counts[lang] = confident_language_counts.get(lang, 0) + 1
 
     # Step 3: Document-level language assessment - find primary languages
-    primary_languages: list[Language] = []
+    primary_languages: list[LanguageCode] = []
 
     # If languages parameter is provided, prioritize those languages
     if languages:
@@ -225,7 +224,7 @@ def contextual_detect(
         primary_languages = [most_common_lang]
 
     # Step 4: Process sentences with context awareness
-    final_languages: list[Language] = []
+    final_languages: list[LanguageCode] = []
 
     for sentence, detection, probs in first_pass_results:
         detected_lang = detection.language
@@ -272,10 +271,10 @@ def contextual_detect(
 
 def count_by_language(
     sentences: Sequence[str],
-    languages: Sequence[Language] | None = None,
+    languages: Sequence[LanguageCode] | None = None,
     model: ModelSize = ModelSize.SMALL,
     context_correction: bool = True,
-) -> Counter[Language]:
+) -> Counter[LanguageCode]:
     """
     Given a batch of sentences, return a Counter mapping language codes to the number of sentences assigned to each
     language, using the contextual detect algorithm.
@@ -300,12 +299,12 @@ def count_by_language(
 
 def get_languages_by_count(
     sentences: Sequence[str],
-    languages: Sequence[Language] | None = None,
+    languages: Sequence[LanguageCode] | None = None,
     model: ModelSize = ModelSize.SMALL,
     context_correction: bool = True,
-) -> list[tuple[Language, int]]:
+) -> list[LanguageCode]:
     """
-    Given a batch of sentences, return a list of (language, count) tuples sorted by decreasing count,
+    Given a batch of sentences, return a list of languages sorted by decreasing count,
     using the contextual detection algorithm.
 
     Args:
@@ -315,21 +314,25 @@ def get_languages_by_count(
         context_correction: Whether to apply context correction; if False, returns raw fast-langdetect results.
 
     Returns:
-        List of (language, count) tuples sorted by decreasing count.
+        List of language codes sorted by decreasing count.
     """
     counts = count_by_language(sentences, languages=languages, model=model, context_correction=context_correction)
-    return sorted(counts.items(), key=lambda x: x[1], reverse=True)
+    sorted_items = sorted(counts.items(), key=lambda x: x[1], reverse=True)
+    return [lang for lang, _ in sorted_items]
 
 
 def get_majority_language(
     sentences: Sequence[str],
-    languages: Sequence[Language] | None = None,
+    languages: Sequence[LanguageCode] | None = None,
     model: ModelSize = ModelSize.SMALL,
     context_correction: bool = True,
-) -> Language | None:
+) -> LanguageCode | None:
     """
     Given a batch of sentences, return the language code with the highest count
     (the majority language), or None if there are no sentences.
+
+    If multiple languages have the same highest count, returns the alphabetically
+    first language code.
 
     Args:
         sentences: The sentences to process.
@@ -343,4 +346,12 @@ def get_majority_language(
     counts = count_by_language(sentences, languages=languages, model=model, context_correction=context_correction)
     if not counts:
         return None
-    return max(counts.items(), key=lambda x: x[1])[0]
+
+    # Find the maximum count
+    max_count = max(counts.values())
+
+    # Get all languages with the maximum count
+    max_languages = [lang for lang, count in counts.items() if count == max_count]
+
+    # Return the alphabetically first language
+    return min(max_languages)

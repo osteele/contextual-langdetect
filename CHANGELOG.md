@@ -5,6 +5,16 @@ All notable changes to contextual-langdetect will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- Renamed Language to LanguageCode
+- Changed get_languages_by_count to return a list of LanguageCode instead of tuples
+- Updated get_majority_language to return the alphabetically first language if multiple languages are tied
+
+### Added
+- Documentation for LanguageCode specifying it's an ISO 639 2- or 3-letter language code
+
 ## [0.1.3] - 2025-04-21
 
 ### Added
