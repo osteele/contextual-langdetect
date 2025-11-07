@@ -360,3 +360,96 @@ def test_get_majority_language_basic() -> None:
 
 def test_get_majority_language_empty() -> None:
     assert get_majority_language([]) is None
+
+
+def test_detect_language_empty_text() -> None:
+    """Test detection with empty text raises ValueError."""
+    import pytest
+
+    with pytest.raises(ValueError, match="Empty or whitespace-only text"):
+        detect_language("")
+
+    with pytest.raises(ValueError, match="Empty or whitespace-only text"):
+        detect_language("   ")
+
+
+def test_get_language_probabilities_empty_text() -> None:
+    """Test probabilities with empty text raises ValueError."""
+    import pytest
+
+    with pytest.raises(ValueError, match="Empty or whitespace-only text"):
+        get_language_probabilities("")
+
+    with pytest.raises(ValueError, match="Empty or whitespace-only text"):
+        get_language_probabilities("   ")
+
+
+def test_contextual_detect_with_empty_sentences() -> None:
+    """Test that empty sentences are skipped gracefully."""
+    sentences = ["Hello", "", "   ", "Bonjour"]
+
+    with (
+        patch("contextual_langdetect.detection.detect_language") as mock_detect,
+        patch("contextual_langdetect.detection.get_language_probabilities") as mock_probs,
+    ):
+        # Setup mocks - ValueError is raised immediately in detect_language for empty text
+        # so get_language_probabilities is never called for those sentences
+        mock_detect.side_effect = [
+            DetectionResult(language="en", confidence=0.95, is_ambiguous=False),
+            ValueError("Empty or whitespace-only text"),  # Empty string
+            ValueError("Empty or whitespace-only text"),  # Whitespace
+            DetectionResult(language="fr", confidence=0.95, is_ambiguous=False),
+        ]
+
+        # Only called for valid sentences (first and last)
+        mock_probs.side_effect = [
+            {"en": 0.95},
+            {"fr": 0.95},
+        ]
+
+        # Process document - should skip empty sentences
+        results = contextual_detect(sentences)
+
+        # Only valid sentences should be in results
+        assert results == ["en", "fr"]
+
+
+def test_contextual_detect_without_context_correction() -> None:
+    """Test that context_correction=False returns raw detection results."""
+    sentences = ["你好", "Hello"]
+
+    with (
+        patch("contextual_langdetect.detection.detect_language") as mock_detect,
+        patch("contextual_langdetect.detection.get_language_probabilities") as mock_probs,
+    ):
+        mock_detect.side_effect = [
+            DetectionResult(language="ja", confidence=0.60, is_ambiguous=True),  # Incorrectly detected
+            DetectionResult(language="en", confidence=0.95, is_ambiguous=False),
+        ]
+
+        mock_probs.side_effect = [
+            {"ja": 0.60, "zh": 0.30},
+            {"en": 0.95},
+        ]
+
+        # With context_correction=False, should return raw results
+        results = contextual_detect(sentences, context_correction=False)
+
+        # Should get raw detections without correction
+        assert results == ["ja", "en"]
+
+
+def test_language_state_initialization() -> None:
+    """Test LanguageState initialization with None values."""
+    state = LanguageState()
+
+    # Check defaults are set
+    assert state.detected_language is None
+    assert state.language_history == {}
+    assert state.primary_languages == []
+
+    # Test recording a language initializes history if needed
+    state.language_history = None
+    state.record_language("en")
+    assert state.language_history is not None
+    assert state.language_history["en"] == 1
