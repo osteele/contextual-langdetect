@@ -47,7 +47,7 @@ pip install contextual-langdetect
 
 ## Usage
 
-### count_by_language
+### contextual_detect
 
 ```python
 from contextual_langdetect import contextual_detect
@@ -92,10 +92,10 @@ def count_by_language(
     languages: Sequence[Language] | None = None,
     model: ModelSize = ModelSize.SMALL,
     context_correction: bool = True,
-) -> dict[Language, int]
+) -> Counter[Language]
 ```
 
-Given a batch of sentences, returns a dict mapping language codes to the number of sentences assigned to each language, using the contextual detection algorithm.
+Given a batch of sentences, returns a Counter (a dict subclass) mapping language codes to the number of sentences assigned to each language, using the contextual detection algorithm.
 
 **Example:**
 ```python

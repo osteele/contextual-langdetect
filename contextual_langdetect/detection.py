@@ -61,12 +61,19 @@ class LanguageState:
             self.detected_language = max(self.language_history.items(), key=lambda x: x[1])[0]
 
             # Update primary languages (anything that appears >10% of the time)
+            # Note: PRIMARY_LANGUAGE_THRESHOLD is defined below after imports
             threshold = max(1, sum(self.language_history.values()) * 0.1)
             self.primary_languages = [lang for lang, count in self.language_history.items() if count >= threshold]
 
 
 # Confidence threshold for language detection
 CONFIDENCE_THRESHOLD = 0.70  # Adjust as needed based on empirical testing
+
+# Context-aware detection thresholds
+PRIMARY_LANGUAGE_THRESHOLD = 0.1  # Languages appearing in >10% of sentences are considered primary
+LANGUAGE_BIAS_BOOST_FACTOR = 1.2  # Boost factor for specified languages in biasing
+MIN_BIASED_PROBABILITY = 0.4  # Minimum probability for biased language to override detection
+MIN_ALTERNATIVE_PROBABILITY = 0.3  # Minimum probability to consider alternative language
 
 
 def detect_language(text: str, model: ModelSize = ModelSize.SMALL) -> DetectionResult:
@@ -153,10 +160,9 @@ def contextual_detect(
             if languages:
                 biased_probs: dict[str, float] = {}
                 # Keep only languages from the languages list, with a boost factor
-                boost_factor = 1.2  # Boost specified languages by this factor
                 for lang in languages:
                     if lang in language_probs:
-                        biased_probs[lang] = language_probs[lang] * boost_factor
+                        biased_probs[lang] = language_probs[lang] * LANGUAGE_BIAS_BOOST_FACTOR
 
                 # If we have biased probabilities, normalize them
                 if biased_probs:
@@ -173,7 +179,7 @@ def contextual_detect(
 
                         if biased_best_lang != detection.language:
                             # Only override if the biased language has a reasonable probability
-                            if biased_best_prob > 0.4:
+                            if biased_best_prob > MIN_BIASED_PROBABILITY:
                                 detection = DetectionResult(
                                     language=biased_best_lang,
                                     confidence=biased_best_prob,
@@ -187,8 +193,8 @@ def contextual_detect(
             # Store results (sentence, detection, probabilities)
             first_pass_results.append((sentence, detection, language_probs))
 
-        except LanguageDetectionError:
-            # Skip problematic sentences
+        except (LanguageDetectionError, ValueError):
+            # Skip problematic sentences (empty, invalid, or detection failures)
             continue
 
     # If context correction is disabled, just return raw results from fast-langdetect
@@ -215,7 +221,7 @@ def contextual_detect(
     # Otherwise determine primary languages from detection statistics
     elif confident_language_counts:
         # Get languages with significant presence (>10% of sentences or at least 1)
-        threshold = max(1, len(first_pass_results) * 0.1)
+        threshold = max(1, len(first_pass_results) * PRIMARY_LANGUAGE_THRESHOLD)
         primary_languages = [lang for lang, count in confident_language_counts.items() if count >= threshold]
 
     # Fallback if no confident detections or not enough primary languages
@@ -262,7 +268,7 @@ def contextual_detect(
                         best_lang = lang
 
                 # If we found a match with reasonable probability, use it
-                if best_lang is not None and best_score > 0.3:
+                if best_lang is not None and best_score > MIN_ALTERNATIVE_PROBABILITY:
                     detected_lang = best_lang
 
         final_languages.append(detected_lang)

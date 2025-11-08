@@ -5,6 +5,29 @@ All notable changes to contextual-langdetect will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Changed
+- **BREAKING**: Dropped Python 3.9 support; minimum required version is now Python 3.10
+- Exception class naming: `contextualLangDetectError` → `ContextualLangDetectError` (PEP 8 compliant)
+- Extracted magic numbers to named constants for better maintainability:
+  - `PRIMARY_LANGUAGE_THRESHOLD = 0.1`
+  - `LANGUAGE_BIAS_BOOST_FACTOR = 1.2`
+  - `MIN_BIASED_PROBABILITY = 0.4`
+  - `MIN_ALTERNATIVE_PROBABILITY = 0.3`
+
+### Fixed
+- Improved error handling: now catches both `LanguageDetectionError` and `ValueError` in `contextual_detect`
+- Fixed duplicate section header in README documentation
+- Clarified `Counter` return type in API documentation
+
+### Added
+- Exported exception classes (`ContextualLangDetectError`, `LanguageDetectionError`) in public API
+- Added tests for empty text error handling
+- Added tests for context correction behavior
+- Added tests for `LanguageState` initialization
+- Improved test coverage from 93% to 97%
+
 ## [0.1.3] - 2025-04-21
 
 ### Added

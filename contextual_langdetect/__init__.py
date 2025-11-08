@@ -11,10 +11,16 @@ from contextual_langdetect.detection import (
     get_languages_by_count,
     get_majority_language,
 )
+from contextual_langdetect.exceptions import (
+    ContextualLangDetectError,
+    LanguageDetectionError,
+)
 
 __all__ = [
+    "ContextualLangDetectError",
     "DetectionResult",
     "Language",
+    "LanguageDetectionError",
     "LanguageState",
     "contextual_detect",
     "count_by_language",
