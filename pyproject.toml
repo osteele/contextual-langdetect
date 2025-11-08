@@ -23,7 +23,7 @@ classifiers = [
     "Topic :: Text Processing :: Linguistic",
 ]
 dependencies = ["fast-langdetect>=0.3.2", "rich>=13.7.0"]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [dependency-groups]
 dev = [
@@ -43,7 +43,7 @@ Source = "https://github.com/osteele/contextual-langdetect"
 
 [tool.ruff]
 line-length = 120
-target-version = "py39"
+target-version = "py310"
 
 [tool.ruff.lint]
 select = [
